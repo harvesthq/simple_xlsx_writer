@@ -1,0 +1,8 @@
+o = SimpleXlsx::Serializer.new("filename") do |doc|
+  doc.add_sheet("Sheet1") do |sheet|
+    sheet.add_header(%w{Col1 Col2 Col2})
+    sheet.add_row(%w{Val1 Val2 Val3})
+  end
+end
+
+o.path
