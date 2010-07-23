@@ -1,0 +1,12 @@
+*~
+*.swp
+\#*#
+TAGS
+tmtags
+tmp
+*.patch
+*.diff
+*.xmlx
+notes.txt
+*.\#*
+*.rbc

@@ -1,0 +1,6 @@
+module SimpleXlsx
+
+class Serializer
+end
+
+end

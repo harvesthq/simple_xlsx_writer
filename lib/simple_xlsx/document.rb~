@@ -1,0 +1,4 @@
+module SimpleXlsx
+  class Document
+  end
+end
