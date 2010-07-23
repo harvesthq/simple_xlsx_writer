@@ -1,6 +1,0 @@
-module SimpleXlsx
-  class Sheet
-    def initialize document, name
-    end
-  end
-end
