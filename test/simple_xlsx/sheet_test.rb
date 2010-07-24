@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + '/../test_helper.rb'
+require "rexml/document"
 
 module SimpleXlsx
 
@@ -24,16 +25,49 @@ class SheetTest < Test::Unit::TestCase
     assert_equal 'BC', Sheet.column_index(25+26+3)
   end
 
-  def test_header
-    @sheet = Sheet.new(nil, 'something')
-    puts @sheet.to_xml
-    exp = <<-ends
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
-<sheetData>
-</sheetData></worksheet>
-ends
-    assert_equal exp.strip, @sheet.to_xml
+  def test_format_field_for_strings
+    v = Sheet.format_field_and_type_and_style "<escape this>"
+    assert_equal [:inlineStr, "<is><t>&lt;escape this&gt;</t></is>", 5], v
   end
+
+  def test_format_field_for_numbers
+    v = Sheet.format_field_and_type_and_style 3
+    assert_equal [:n, "<v>3</v>", 3], v
+    v = Sheet.format_field_and_type_and_style(BigDecimal.new("45"))
+    assert_equal [:n, "<v>45.0</v>", 3], v
+    v = Sheet.format_field_and_type_and_style(9.32)
+    assert_equal [:n, "<v>9.32</v>", 3], v
+  end
+
+  def test_format_field_for_date
+    v = Sheet.format_field_and_type_and_style(Date.parse('2010-Jul-24'))
+    assert_equal [:inlineStr, "<is><t>2010-Jul-24</t></is>", 1], v
+  end
+
+  def test_format_field_for_boolean
+    v = Sheet.format_field_and_type_and_style(false)
+    assert_equal [:b, "<v>0</v>", 6], v
+    v = Sheet.format_field_and_type_and_style(true)
+    assert_equal [:b, "<v>1</v>", 6], v
+  end
+
+  def test_add_row
+    str = ""
+    io = StringIO.new(str)
+    Sheet.new(nil, 'name', io) do |sheet|
+      sheet.add_row ['this is ', 'a new row']
+    end
+    doc = REXML::Document.new str
+    assert_equal 'worksheet', doc.root.name
+    sheetdata = doc.root.elements['sheetData']
+    assert sheetdata
+    row = sheetdata.elements['row']
+    assert row
+    assert_equal '1', row.attributes['r']
+    assert_equal 2, row.elements.to_a.size
+    assert_equal ["r", "s", "t"], row.elements.to_a[0].attributes.keys
+  end
+
 
 end
 

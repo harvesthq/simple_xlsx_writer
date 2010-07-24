@@ -1,11 +1,21 @@
+require 'rubygems'
+require 'rake'
+require 'rake/testtask'
+require 'rake/gempackagetask'
 
+task :default => [:test]
 
-# require 'rubygems'
-# require 'rake'
-# require 'rake/testtask'
-# require 'rake/rdoctask'
-# require 'rake/packagetask'
-# require 'rake/gempackagetask'
+Rake::TestTask.new do |test|
+  test.libs       << "test"
+  test.test_files =  Dir['test/**/*_test.rb'].sort
+  test.verbose    =  true
+end
+
+desc "generate tags for emacs"
+task :tags do
+  sh "ctags -Re lib/ "
+end
+
 
 # spec = Gem::Specification.new do |s|
 #   s.name = "simple_xlsx_writer"

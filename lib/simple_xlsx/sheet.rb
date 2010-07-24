@@ -1,7 +1,10 @@
+require 'bigdecimal'
+
 module SimpleXlsx
 
 class Sheet
   attr_reader :name
+  attr_accessor :rid
 
   def initialize document, name, stream, &block
     @document = document
@@ -22,27 +25,29 @@ ends
   def add_row arry
     row = ["<row r=\"#{@row_ndx}\">"]
     arry.each_with_index do |value, col_ndx|
-      kind, ccontent = Sheet.format_field_and_type value
-      row << "<c r=\"#{Sheet.column_index(col_ndx)}#{@row_ndx}\" t=#{kind}>#{ccontent}</c>"
+      kind, ccontent, cstyle = Sheet.format_field_and_type_and_style value
+      row << "<c r=\"#{Sheet.column_index(col_ndx)}#{@row_ndx}\" t=\"#{kind.to_s}\" s=\"#{cstyle}\">#{ccontent}</c>"
     end
     row << "</row>"
     @row_ndx += 1
     @stream.write(row.join())
   end
 
-  def self.format_field_and_type value
+  def self.format_field_and_type_and_style value
     if value.is_a?(String)
-      [:inlineStr, "<is><t>#{value.to_xs}</t></is>"]
+      [:inlineStr, "<is><t>#{value.to_xs}</t></is>", 5]
+    elsif value.is_a?(BigDecimal)
+      [:n, "<v>#{value.to_s('f')}</v>", 3]
     elsif value.is_a?(Numeric)
-      [:inlineStr, "<is><t>#{value.to_s.to_xs}</t></is>"]
+      [:n, "<v>#{value.to_s}</v>", 3]
     elsif value.is_a?(Date)
-      [:inlineStr, "<is><t>#{value.to_s.to_xs}</t></is>"]
+      [:inlineStr, "<is><t>#{value.strftime('%Y-%b-%d')}</t></is>", 1]
     elsif value.is_a?(DateTime)
-      [:inlineStr, "<is><t>#{value.to_s.to_xs}</t></is>"]
+      [:inlineStr, "<is><t>#{value.strftime('%Y-%b-%d %H:%M:%S')}</t></is>", 2]
     elsif value.is_a?(TrueClass) || value.is_a?(FalseClass)
-      [:inlineStr, "<is><t>#{value.to_s.to_xs}</t></is>"]
+      [:b, "<v>#{value ? '1' : '0'}</v>", 6]
     else
-      [:inlineStr, "<is><t>#{value.to_s.to_xs}</t></is>"]
+      [:inlineStr, "<is><t>#{value.to_s.to_xs}</t></is>", 5]
     end
   end
 
@@ -56,7 +61,7 @@ ends
       result << abc[n % 26]
       n /= 26
     end
-    result << abc[n]
+    result << abc[result.empty? ? n : n - 1]
     result.reverse.join
   end
 
