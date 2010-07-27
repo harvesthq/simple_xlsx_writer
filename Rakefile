@@ -19,7 +19,7 @@ end
 
 spec = Gem::Specification.new do |s|
   s.name = "simple_xlsx_writer"
-  s.version = "0.5"
+  s.version = "0.5.1"
   s.author = "Dee Zsombor"
   s.email = "zsombor@primalgrasp.com"
   s.homepage = "http://simplxlsxwriter.rubyforge.org"
@@ -32,7 +32,7 @@ spec = Gem::Specification.new do |s|
   s.has_rdoc = true
   s.extra_rdoc_files = ["README"]
   s.add_dependency("rubyzip", ">= 0.9.4")
-  s.add_dependency("fastxs", ">= 0.7.3")
+  s.add_dependency("fast_xs", ">= 0.7.3")
 end
 
 Rake::GemPackageTask.new(spec) do |pkg|
