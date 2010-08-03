@@ -23,6 +23,7 @@ class Serializer
       f.puts <<-ends
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+<workbookPr date1904="1" />
 <sheets>
 ends
       @doc.sheets.each_with_index do |sheet, ndx|
@@ -127,11 +128,6 @@ ends
 <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
 <numFmts count="7">
   <numFmt formatCode="GENERAL" numFmtId="164"/>
-  <numFmt formatCode="MM/DD/YYYY\ HH:MM:SS" numFmtId="165"/>
-  <numFmt formatCode="MMM\ D&quot;, &quot;YYYY" numFmtId="166"/>
-  <numFmt formatCode="0" numFmtId="167"/>
-  <numFmt formatCode="0.00" numFmtId="168"/>
-  <numFmt formatCode="@" numFmtId="169"/>
   <numFmt formatCode="&quot;TRUE&quot;;&quot;TRUE&quot;;&quot;FALSE&quot;" numFmtId="170"/>
 </numFmts>
 <fonts count="5">
@@ -175,11 +171,11 @@ ends
   </cellStyleXfs>
 <cellXfs count="7">
   <xf applyAlignment="false" applyBorder="false" applyFont="false" applyProtection="false" borderId="0" fillId="0" fontId="4" numFmtId="164" xfId="0"></xf>
-  <xf applyAlignment="false" applyBorder="false" applyFont="true" applyProtection="false" borderId="0" fillId="0" fontId="4" numFmtId="165" xfId="0"></xf>
-  <xf applyAlignment="false" applyBorder="false" applyFont="true" applyProtection="false" borderId="0" fillId="0" fontId="4" numFmtId="166" xfId="0"></xf>
-  <xf applyAlignment="false" applyBorder="false" applyFont="false" applyProtection="false" borderId="0" fillId="0" fontId="4" numFmtId="167" xfId="0"></xf>
-  <xf applyAlignment="false" applyBorder="false" applyFont="false" applyProtection="false" borderId="0" fillId="0" fontId="4" numFmtId="168" xfId="0"></xf>
-  <xf applyAlignment="false" applyBorder="false" applyFont="true" applyProtection="false" borderId="0" fillId="0" fontId="4" numFmtId="169" xfId="0"></xf>
+  <xf applyAlignment="false" applyBorder="false" applyFont="true" applyProtection="false" borderId="0" fillId="0" fontId="4" numFmtId="22" xfId="0"></xf>
+  <xf applyAlignment="false" applyBorder="false" applyFont="true" applyProtection="false" borderId="0" fillId="0" fontId="4" numFmtId="15" xfId="0"></xf>
+  <xf applyAlignment="false" applyBorder="false" applyFont="false" applyProtection="false" borderId="0" fillId="0" fontId="4" numFmtId="1" xfId="0"></xf>
+  <xf applyAlignment="false" applyBorder="false" applyFont="false" applyProtection="false" borderId="0" fillId="0" fontId="4" numFmtId="2" xfId="0"></xf>
+  <xf applyAlignment="false" applyBorder="false" applyFont="true" applyProtection="false" borderId="0" fillId="0" fontId="4" numFmtId="49" xfId="0"></xf>
   <xf applyAlignment="false" applyBorder="false" applyFont="false" applyProtection="false" borderId="0" fillId="0" fontId="4" numFmtId="170" xfId="0"></xf>
 </cellXfs>
 <cellStyles count="6"><cellStyle builtinId="0" customBuiltin="false" name="Normal" xfId="0"/>

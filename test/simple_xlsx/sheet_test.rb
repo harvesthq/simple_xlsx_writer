@@ -1,5 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper.rb'
 require "rexml/document"
+require 'time'
 
 module SimpleXlsx
 
@@ -34,15 +35,21 @@ class SheetTest < Test::Unit::TestCase
     v = Sheet.format_field_and_type_and_style 3
     assert_equal [:n, "<v>3</v>", 3], v
     v = Sheet.format_field_and_type_and_style(BigDecimal.new("45"))
-    assert_equal [:n, "<v>45.0</v>", 3], v
+    assert_equal [:n, "<v>45.0</v>", 4], v
     v = Sheet.format_field_and_type_and_style(9.32)
-    assert_equal [:n, "<v>9.32</v>", 3], v
+    assert_equal [:n, "<v>9.32</v>", 4], v
   end
 
   def test_format_field_for_date
     v = Sheet.format_field_and_type_and_style(Date.parse('2010-Jul-24'))
-    assert_equal [:inlineStr, "<is><t>2010-Jul-24</t></is>", 1], v
+    assert_equal [:n, "<v>38921</v>", 2], v
   end
+
+  def test_format_field_for_datetime
+    v = Sheet.format_field_and_type_and_style(Time.parse('2010-Jul-24 12:00 UTC'))
+    assert_equal [:n, "<v>38921.5</v>", 1], v
+  end
+
 
   def test_format_field_for_boolean
     v = Sheet.format_field_and_type_and_style(false)

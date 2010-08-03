@@ -1,4 +1,5 @@
 require 'bigdecimal'
+require 'time'
 
 module SimpleXlsx
 
@@ -37,18 +38,30 @@ ends
     if value.is_a?(String)
       [:inlineStr, "<is><t>#{value.to_xs}</t></is>", 5]
     elsif value.is_a?(BigDecimal)
-      [:n, "<v>#{value.to_s('f')}</v>", 3]
+      [:n, "<v>#{value.to_s('f')}</v>", 4]
+    elsif value.is_a?(Float)
+      [:n, "<v>#{value.to_s}</v>", 4]
     elsif value.is_a?(Numeric)
       [:n, "<v>#{value.to_s}</v>", 3]
     elsif value.is_a?(Date)
-      [:inlineStr, "<is><t>#{value.strftime('%Y-%b-%d')}</t></is>", 1]
-    elsif value.is_a?(DateTime)
-      [:inlineStr, "<is><t>#{value.strftime('%Y-%b-%d %H:%M:%S')}</t></is>", 2]
+      [:n, "<v>#{days_since_jan_1_1904(value)}</v>", 2]
+    elsif value.is_a?(Time)
+      [:n, "<v>#{fractional_days_since_jan_1_1904(value)}</v>", 1]
     elsif value.is_a?(TrueClass) || value.is_a?(FalseClass)
       [:b, "<v>#{value ? '1' : '0'}</v>", 6]
     else
       [:inlineStr, "<is><t>#{value.to_s.to_xs}</t></is>", 5]
     end
+  end
+
+  def self.days_since_jan_1_1904 date
+    @@jan_1_1904 ||= Date.parse("1904 Jan 1")
+    (date - @@jan_1_1904).to_i
+  end
+
+  def self.fractional_days_since_jan_1_1904 value
+    @@jan_1_1904_midnight ||= ::Time.utc(1904, 1, 1)
+    (value - @@jan_1_1904_midnight) / 86400.0 #24*60*60
   end
 
   def self.abc
