@@ -44,9 +44,9 @@ ends
     elsif value.is_a?(Numeric)
       [:n, "<v>#{value.to_s}</v>", 3]
     elsif value.is_a?(Date)
-      [:n, "<v>#{days_since_jan_1_1904(value)}</v>", 2]
+      [:n, "<v>#{days_since_jan_1_1900(value)}</v>", 2]
     elsif value.is_a?(Time)
-      [:n, "<v>#{fractional_days_since_jan_1_1904(value)}</v>", 1]
+      [:n, "<v>#{fractional_days_since_jan_1_1900(value)}</v>", 1]
     elsif value.is_a?(TrueClass) || value.is_a?(FalseClass)
       [:b, "<v>#{value ? '1' : '0'}</v>", 6]
     else
@@ -54,14 +54,15 @@ ends
     end
   end
 
-  def self.days_since_jan_1_1904 date
+  def self.days_since_jan_1_1900 date
     @@jan_1_1904 ||= Date.parse("1904 Jan 1")
-    (date - @@jan_1_1904).to_i
+    (date - @@jan_1_1904).to_i + 1462 # http://support.microsoft.com/kb/180162
   end
 
-  def self.fractional_days_since_jan_1_1904 value
+  def self.fractional_days_since_jan_1_1900 value
     @@jan_1_1904_midnight ||= ::Time.utc(1904, 1, 1)
-    (value - @@jan_1_1904_midnight) / 86400.0 #24*60*60
+    ((value - @@jan_1_1904_midnight) / 86400.0) + #24*60*60
+      1462 # http://support.microsoft.com/kb/180162
   end
 
   def self.abc

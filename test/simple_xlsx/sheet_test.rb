@@ -42,12 +42,12 @@ class SheetTest < Test::Unit::TestCase
 
   def test_format_field_for_date
     v = Sheet.format_field_and_type_and_style(Date.parse('2010-Jul-24'))
-    assert_equal [:n, "<v>38921</v>", 2], v
+    assert_equal [:n, "<v>#{38921+1462}</v>", 2], v
   end
 
   def test_format_field_for_datetime
     v = Sheet.format_field_and_type_and_style(Time.parse('2010-Jul-24 12:00 UTC'))
-    assert_equal [:n, "<v>38921.5</v>", 1], v
+    assert_equal [:n, "<v>#{38921.5+1462}</v>", 1], v
   end
 
 
