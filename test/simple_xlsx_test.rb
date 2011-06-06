@@ -3,9 +3,16 @@ require 'fileutils'
 
 class SimpleXlsxTest < Test::Unit::TestCase
 
-  def test_top_level
+  def setup
     FileUtils.rm_f "test.xlsx"
-    o = SimpleXlsx::Serializer.new(Tempfile.new("test.xlsx")) do |doc|
+  end
+
+  def teardown
+    FileUtils.rm_f "test.xlsx"
+  end
+
+  def test_top_level
+    o = SimpleXlsx::Serializer.new("test.xlsx") do |doc|
       doc.add_sheet "First" do |sheet|
         sheet.add_row ["Hello", "World", 3.14, 7]
         sheet.add_row ["Another", "Row", Date.today, Time.parse('2010-Jul-24 12:00 UTC')]

@@ -2,7 +2,9 @@ module SimpleXlsx
 
 class Serializer
 
-  def initialize tempfile
+  def initialize file_path
+    tempfile = Tempfile.new(File.basename(file_path))
+
     Zip::ZipOutputStream.open(tempfile.path) do |zip|
       @zip = zip
       add_doc_props
@@ -14,6 +16,9 @@ class Serializer
       add_content_types
       add_workbook_part
     end
+
+    FileUtils.mkdir_p(File.dirname(file_path))
+    FileUtils.cp(tempfile.path, file_path)
   end
 
   def add_workbook_part
