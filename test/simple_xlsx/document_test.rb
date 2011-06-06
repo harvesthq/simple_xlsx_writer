@@ -6,7 +6,7 @@ class DocumentTest < Test::Unit::TestCase
 
   def open_stream_for_sheet sheets_size
     assert_equal sheets_size, @doc.sheets.size
-    yield self
+    self
   end
 
   def write arg

@@ -72,7 +72,7 @@ class SheetTest < Test::Unit::TestCase
     assert row
     assert_equal '1', row.attributes['r']
     assert_equal 2, row.elements.to_a.size
-    assert_equal ["r", "s", "t"], row.elements.to_a[0].attributes.keys
+    assert_equal %w[r s t], row.elements.to_a[0].attributes.keys.sort
   end
 
 
