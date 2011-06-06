@@ -18,17 +18,16 @@ class Serializer
 
   def add_workbook_part
     @zip.put_next_entry("xl/workbook.xml")
-    f = @zip
-    f.puts <<-ends
+    @zip.puts <<-ends
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
 <workbookPr date1904="0" />
 <sheets>
 ends
     @doc.sheets.each_with_index do |sheet, ndx|
-      f.puts %Q{<sheet name="#{sheet.name}" sheetId="#{ndx + 1}" r:id="#{sheet.rid}"/>}
+      @zip.puts %Q{<sheet name="#{sheet.name}" sheetId="#{ndx + 1}" r:id="#{sheet.rid}"/>}
     end
-    f.puts "</sheets></workbook>"
+    @zip.puts "</sheets></workbook>"
   end
 
   def open_stream_for_sheet ndx
@@ -38,10 +37,9 @@ ends
 
   def add_content_types
     @zip.put_next_entry("[Content_Types].xml")
-    f = @zip
-    f.puts '<?xml version="1.0" encoding="UTF-8"?>'
-    f.puts '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
-    f.puts <<-ends
+    @zip.puts '<?xml version="1.0" encoding="UTF-8"?>'
+    @zip.puts '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+    @zip.puts <<-ends
   <Override PartName="/_rels/.rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
   <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>
   <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>
@@ -49,51 +47,48 @@ ends
   <Override PartName="/xl/_rels/workbook.xml.rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
 ends
     if @doc.has_shared_strings?
-      f.puts '<Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/>'
+      @zip.puts '<Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/>'
     end
     @doc.sheets.each_with_index do |sheet, ndx|
-      f.puts %Q{<Override PartName="/xl/worksheets/sheet#{ndx+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>}
+      @zip.puts %Q{<Override PartName="/xl/worksheets/sheet#{ndx+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>}
     end
-    f.puts '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'
-    f.puts "</Types>"
+    @zip.puts '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'
+    @zip.puts "</Types>"
   end
 
   def add_workbook_relationship_part
     @zip.put_next_entry("xl/_rels/workbook.xml.rels")
-    f = @zip
-    f.puts <<-ends
+    @zip.puts <<-ends
 <?xml version="1.0" encoding="UTF-8"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
 ends
     cnt = 0
-    f.puts %Q{<Relationship Id="rId#{cnt += 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>}
+    @zip.puts %Q{<Relationship Id="rId#{cnt += 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>}
     @doc.sheets.each_with_index do |sheet, ndx|
       sheet.rid = "rId#{cnt += 1}"
-      f.puts %Q{<Relationship Id="#{sheet.rid}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet#{ndx + 1}.xml"/>}
+      @zip.puts %Q{<Relationship Id="#{sheet.rid}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet#{ndx + 1}.xml"/>}
     end
     if @doc.has_shared_strings?
-      f.puts '<Relationship Id="rId#{cnt += 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="xl/sharedStrings.xml"/>'
+      @zip.puts '<Relationship Id="rId#{cnt += 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="xl/sharedStrings.xml"/>'
     end
-    f.puts "</Relationships>"
+    @zip.puts "</Relationships>"
   end
 
   def add_relationship_part
     @zip.put_next_entry("_rels/.rels")
-    f = @zip
-    f.puts <<-ends
+    @zip.puts <<-ends
 <?xml version="1.0" encoding="UTF-8"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>
   <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>
   <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>
 ends
-    f.puts "</Relationships>"
+    @zip.puts "</Relationships>"
   end
 
   def add_doc_props
     @zip.put_next_entry("docProps/core.xml")
-    f = @zip
-    f.puts <<-ends
+    @zip.puts <<-ends
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
    <dcterms:created xsi:type="dcterms:W3CDTF">#{Time.now.utc.xmlschema}</dcterms:created>
@@ -101,8 +96,7 @@ ends
 </cp:coreProperties>
 ends
     @zip.put_next_entry("docProps/app.xml")
-    f = @zip
-    f.puts <<-ends
+    @zip.puts <<-ends
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
   <TotalTime>0</TotalTime>
@@ -112,8 +106,7 @@ ends
 
   def add_styles
     @zip.put_next_entry("xl/styles.xml")
-    f = @zip
-    f.puts <<-ends
+    @zip.puts <<-ends
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
 <numFmts count="7">
