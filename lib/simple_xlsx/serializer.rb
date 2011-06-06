@@ -26,7 +26,7 @@ class Serializer
 <sheets>
 ends
     @doc.sheets.each_with_index do |sheet, ndx|
-      f.puts "<sheet name=\"#{sheet.name}\" sheetId=\"#{ndx + 1}\" r:id=\"#{sheet.rid}\"/>"
+      f.puts %Q{<sheet name="#{sheet.name}" sheetId="#{ndx + 1}" r:id="#{sheet.rid}"/>}
     end
     f.puts "</sheets></workbook>"
   end
@@ -52,7 +52,7 @@ ends
       f.puts '<Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/>'
     end
     @doc.sheets.each_with_index do |sheet, ndx|
-      f.puts "<Override PartName=\"/xl/worksheets/sheet#{ndx+1}.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml\"/>"
+      f.puts %Q{<Override PartName="/xl/worksheets/sheet#{ndx+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>}
     end
     f.puts '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'
     f.puts "</Types>"
@@ -66,10 +66,10 @@ ends
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
 ends
     cnt = 0
-    f.puts "<Relationship Id=\"rId#{cnt += 1}\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles\" Target=\"styles.xml\"/>"
+    f.puts %Q{<Relationship Id="rId#{cnt += 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>}
     @doc.sheets.each_with_index do |sheet, ndx|
       sheet.rid = "rId#{cnt += 1}"
-      f.puts "<Relationship Id=\"#{sheet.rid}\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet\" Target=\"worksheets/sheet#{ndx + 1}.xml\"/>"
+      f.puts %Q{<Relationship Id="#{sheet.rid}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet#{ndx + 1}.xml"/>}
     end
     if @doc.has_shared_strings?
       f.puts '<Relationship Id="rId#{cnt += 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="xl/sharedStrings.xml"/>'
