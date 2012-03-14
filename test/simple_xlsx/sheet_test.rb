@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper.rb'
+require File.join('.', File.dirname(__FILE__), '..', 'test_helper')
 require "rexml/document"
 require 'time'
 
