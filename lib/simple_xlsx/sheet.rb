@@ -24,10 +24,10 @@ ends
   end
 
   def add_row arry
-    row = ["<row r=\"#{@row_ndx}\">"]
+    row = [%Q{<row r="#{@row_ndx}">}]
     arry.each_with_index do |value, col_ndx|
       kind, ccontent, cstyle = Sheet.format_field_and_type_and_style value
-      row << "<c r=\"#{Sheet.column_index(col_ndx)}#{@row_ndx}\" t=\"#{kind.to_s}\" s=\"#{cstyle}\">#{ccontent}</c>"
+      row << %Q{<c r="#{Sheet.column_index(col_ndx)}#{@row_ndx}" t="#{kind.to_s}" s="#{cstyle}">#{ccontent}</c>}
     end
     row << "</row>"
     @row_ndx += 1
