@@ -25,6 +25,7 @@ serializer = SimpleXlsx::Serializer.new("test.xlsx") do |doc|
                   "Economist / Statistician"])
   end
 end
+```
 
 ## License
 
