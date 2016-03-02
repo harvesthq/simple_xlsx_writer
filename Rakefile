@@ -31,7 +31,7 @@ spec = Gem::Specification.new do |s|
   s.test_files = [FileList["{test}/**/*test.rb"].to_a, "test/test_helper.rb"].flatten
   s.has_rdoc = true
   s.extra_rdoc_files = ["README"]
-  s.add_dependency("rubyzip", ">= 0.9.4")
+  s.add_dependency("rubyzip", "~> 0.9.4")
   s.add_dependency("fast_xs", ">= 0.7.3")
 end
 
